@@ -1,7 +1,7 @@
 ---
-title: "Scrape PDF 2"
+title: "Assignment 3"
 author: "Bridget Lang"
-date: "2024-11-3"
+date: "2024-11-9"
 output: html_document
 ---
 # Part 1: Scrape a PDF and split into separate text files
@@ -21,7 +21,7 @@ library(knitr)
 ```{r}
 #Using pdftools package. Good for basic PDF extraction
 
-text <- pdf_text("./Asian_Indian_Women_NYT_LAT_USAT.PDF")
+text <- pdf_text("./moley_news.PDF")
 #pdf_text reads the text from a PDF file.
 writeLines(text, "./extracted_text/all_text.txt")
 #writeLines writes this text to a text file
@@ -62,7 +62,7 @@ cat("Files created:", length(documents), "\n")
 ```{r}
 article_index <- read_lines("./extracted_text/text_extracted_1.txt")
 # Extract lines 16 to 89
-extracted_lines <- article_index[16:89]
+extracted_lines <- article_index[15:173]
 
 
 # Print the extracted lines to the console
@@ -153,7 +153,7 @@ final_data <- aligned_data |>
     title = trimmed_line,
     date = date
   )
-final_data
+
 #Step 4: Date and Publication in separate columns, and formatted
 final_data <- separate(data = final_data, col = date, into = c("date2", "publication"), sep = "  ", extra = "merge", fill = "right")
 
