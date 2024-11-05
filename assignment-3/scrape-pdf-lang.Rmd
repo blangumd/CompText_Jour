@@ -63,15 +63,14 @@ cat("Files created:", length(documents), "\n")
 article_index <- read_lines("./extracted_text/text_extracted_1.txt")
 # Extract lines 16 to 89
 extracted_lines <- article_index[15:173]
-
-
 # Print the extracted lines to the console
 cat(extracted_lines, sep = "\n")
 
 extracted_lines <- extracted_lines |> 
   as.data.frame() 
+extracted_lines
 
-
+  
 
 
 ```
