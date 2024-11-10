@@ -257,7 +257,8 @@ articles_df <- articles_df %>%
   inner_join(final_index)
 
 articles_df <- articles_df %>%
-  slice(-c(1:109)) |> 
+  slice(-c(1:195)) |> 
+  mutate(sentence = gsub("\\d+", "", sentence)) |>
   #gets rid of blank rows
     filter(trimws(sentence) != "") 
 
@@ -265,6 +266,7 @@ articles_df <- articles_df %>%
 write.csv(articles_df, "./articles_df.csv")
 
 ```
+
 #Tokenize and stuff
 ```{r}
 
@@ -280,4 +282,80 @@ one_word_per_row <- article_text %>% mutate(sentence= str_squish(sentence)) |>
   filter(!is.na(word))
 one_word_per_row
 
+
+
+bigrams <- article_text %>% mutate(sentence= str_squish(sentence)) |> 
+  mutate(text = tolower(sentence)) |>  
+  mutate(text = gsub("\\d+", "", text)) |>
+  mutate(text = str_replace_all(text, "- ", "")) %>% 
+  mutate(text = str_replace_all(text, "https", "")) %>% 
+  mutate(text = str_replace_all(text, "www.alt", "")) %>% 
+  mutate(text = str_replace_all(text, "publication", "")) %>% 
+  mutate(text = str_replace_all(text, "length", "")) %>% 
+  mutate(text = str_replace_all(text, "load", "")) %>% 
+  mutate(text = str_replace_all(text, "columbia", "")) %>% 
+    mutate(text = str_replace_all(text, "raymond", "")) %>% 
+    mutate(text = str_replace_all(text, "rights", "")) %>% 
+    mutate(text = str_replace_all(text, "reserved", "")) %>% 
+    mutate(text = str_replace_all(text, "news", "")) %>% 
+    mutate(text = str_replace_all(text, "service", "")) %>% 
+
+    mutate(text = str_replace_all(text, "moley", "")) %>% 
+  mutate(text = str_replace_all(text, "english", "")) %>% 
+  mutate(text = str_replace_all(text, "language", "")) %>% 
+
+    mutate(text = str_replace_all(text, "en.wikipedia.org", "")) %>% 
+  mutate(text = str_replace_all(text, "length", "")) %>% 
+  mutate(text = str_replace_all(text, "words", "")) %>% 
+    mutate(text = str_replace_all(text, "date", "")) %>% 
+    mutate(text = str_replace_all(text, "wiki", "")) %>% 
+
+  mutate(text = str_replace_all(text, "new york times", "")) %>% 
+  unnest_tokens(word, text, token="ngrams", n=2 ) %>%
+  filter(!word %in% stop_words$word) %>%
+  filter(!is.na(word))
+#en.wikipedia.org
+#wiki
+#york times
+#
+
+
+
+
 ```
+
+```{r}
+stories_bigrams_separated <- bigrams %>%
+  separate(word, c("word1", "word2"), sep = " ")
+
+#bigrams with stop words filtered
+bigrams_filtered <- 
+  stories_bigrams_separated %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+bigram_counts <- bigrams_filtered %>%
+  count(word1, word2, sort = TRUE) %>% 
+  filter(!is.na(word1))
+  
+top_20_bigrams <- bigram_counts |> 
+   top_n(20) |> 
+  mutate(bigram = paste(word1, " ", word2)) |> 
+  select(bigram, n)
+  
+
+ggplot(top_20_bigrams, aes(x = reorder(bigram, n), y = n, fill=n)) +
+  geom_bar(stat = "identity") +
+  theme(legend.position = "none") +
+  coord_flip() +  
+  labs(title = "Top Two-Word phrases",
+       x = "Phrase",
+       y = "Count of terms")
+
+
+
+In this week’s analysis, we looked at 32 articles by Raymond Moley. The top 20 two-word phrases had an overarching theme of economics and economic policy. The most common phrase is “gold standard”, appearing 46 times. I did not know what this phrase meant, and googling it returns this definition, as provided by Oxford Languages: “the system by which the value of a currency was defined in terms of gold, for which the currency could be exchanged. The gold standard was generally abandoned in the Depression of the 1930s.” This phrase describes currency and its value, which is not a surprise given the context of the other words. The second most common phrase is “white house”, which indicates a lot of commentary about the actions or opinions of the president or government at the time of the articles’ publications. 
+  
+```
+
+
