@@ -21,7 +21,7 @@ library(knitr)
 #from: https://stackoverflow.com/a/68032558
 getMatch = function(rexp, str) regmatches(str, regexpr(rexp, str))
 
-article_index <- list.files("./moley_newsweek", pattern="*txt") %>% 
+article_index <- list.files("./moley_newsweek_2", pattern="*txt") %>% 
   as.data.frame() |>
   rename(filename = 1) |> 
   mutate(index = row_number()) 
@@ -41,6 +41,11 @@ article_index <- article_index %>%
 #extract day into own column
 article_index <- article_index %>%
   mutate(day = str_replace_all(str_replace_all(getMatch("-[0-9]{2}_", filename), "-", ""), "_", ""))
+
+article_index <- article_index %>%
+  select(index, filename, date, year, month, day)
+
+write.csv(article_index, "article_index.csv")
 
 article_index
 ```
