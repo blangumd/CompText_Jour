@@ -17,7 +17,7 @@ Using 10 articles downloaded from NexisUni for Kemi Busari's research
 #Using pdftools package. Good for basic PDF extraction
 
 
-text <- pdf_text("Moley_newsweek_1956-12-10_48_24 copy.pdf")
+text <- pdf_text("./moley_newsweek/Moley_newsweek_1956-12-10_48_24.pdf")
 #pdf_text reads the text from a PDF file.
 writeLines(text, "moley_text.txt")
 #writeLines writes this text to a text file
@@ -36,7 +36,7 @@ writeLines(text, "moley_text.txt")
 # This approach should keep the text from the second and third columns separate and avoid any intermingling of content.
 
 # Extract text with spatial information
-pdf_info <- pdf_data("Perspective_1948-12-06_sim_newsweek-us_copy.pdf")
+pdf_info <- pdf_data("./moley_newsweek/Perspective_1948-12-06_sim_newsweek-us.pdf")
 
 # Function to segment columns and remove the first column
 filter_columns <- function(page_data) {
@@ -76,7 +76,7 @@ writeLines(cleaned_text, "cleaned_perspective2.txt")
 library(pdftools)
 
 # Extract text with spatial information
-pdf_info <- pdf_data("Perspective_1948-12-06_sim_newsweek-us_copy.pdf")
+pdf_info <- pdf_data("./moley_newsweek/Perspective_1948-12-06_sim_newsweek-us.pdf")
 
 # Function to filter out text in the left column and ignore small fragments
 filter_left_column <- function(page_data) {
@@ -108,7 +108,7 @@ writeLines(cleaned_text, "cleaned_perspective_text.txt")
 library(pdftools)
 
 # Extract text with spatial information
-pdf_info <- pdf_data("Perspective_1948-12-06_sim_newsweek-us_copy.pdf")
+pdf_info <- pdf_data("./moley_newsweek/Perspective_1948-12-06_sim_newsweek-us.pdf")
 
 # Function to filter out text in the left third of the page
 filter_left_column <- function(page_data) {
